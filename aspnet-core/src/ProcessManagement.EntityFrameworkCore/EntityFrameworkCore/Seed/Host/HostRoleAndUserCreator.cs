@@ -34,6 +34,9 @@ namespace ProcessManagement.EntityFrameworkCore.Seed.Host
             if (adminRoleForHost == null)
             {
                 adminRoleForHost = _context.Roles.Add(new Role(null, StaticRoleNames.Host.Admin, StaticRoleNames.Host.Admin) { IsStatic = true, IsDefault = true }).Entity;
+                adminRoleForHost = _context.Roles.Add(new Role(null, StaticRoleNames.Host.Customer, StaticRoleNames.Host.Customer) { IsStatic = true, IsDefault = true }).Entity;
+                adminRoleForHost = _context.Roles.Add(new Role(null, StaticRoleNames.Host.Developer, StaticRoleNames.Host.Developer) { IsStatic = true, IsDefault = true }).Entity;
+                adminRoleForHost = _context.Roles.Add(new Role(null, StaticRoleNames.Host.Manager, StaticRoleNames.Host.Manager) { IsStatic = true, IsDefault = true }).Entity;
                 _context.SaveChanges();
             }
 
