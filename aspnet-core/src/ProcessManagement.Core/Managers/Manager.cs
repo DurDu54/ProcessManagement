@@ -18,6 +18,8 @@ namespace ProcessManagement.Managers
             Projects = new List<Project>();
         }
         public virtual User User { get; set; }
+        public int? ProjectId { get; set; }
+        [ForeignKey(nameof(ProjectId))]
         public virtual ICollection<Project> Projects { get; set; }
 
     }

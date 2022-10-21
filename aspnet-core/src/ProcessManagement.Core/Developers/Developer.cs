@@ -1,7 +1,7 @@
 ﻿using Abp.Domain.Entities.Auditing;
 using ProcessManagement.Authorization.Users;
 using ProcessManagement.Missions;
-using ProcessManagement.Professions;
+using ProcessManagement.Professionlar;
 using ProcessManagement.Projects;
 using System;
 using System.Collections.Generic;
@@ -21,10 +21,14 @@ namespace ProcessManagement.Developers
             Missions = new List<Mission>();
         }
         public virtual User User { get; set; }
-        public int ProfessionId { get; set; }
+        public int? ProfessionId { get; set; }
         [ForeignKey(nameof(ProfessionId))]
         public virtual Profession Profession { get; set; }
+        public int? ProjectId { get; set; }
+        [ForeignKey(nameof(ProjectId))]
         public virtual ICollection<Project> Projects { get; set; }
+        public int? MissionId { get; set; }
+        [ForeignKey(nameof(MissionId))]
         public virtual ICollection<Mission> Missions{ get; set; }
 
 

@@ -145,7 +145,6 @@ namespace ProcessManagement.Users
             ObjectMapper.Map(input, user);
             user.SetNormalizedNames();
         }
-
         protected override UserDto MapToEntityDto(User user)
         {
             var roleIds = user.Roles.Select(x => x.RoleId).ToArray();

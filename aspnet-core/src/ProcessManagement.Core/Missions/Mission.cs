@@ -22,11 +22,11 @@ namespace ProcessManagement.Missions
         public DateTime EndTime { get; set; }
         public virtual ICollection<Commit> Commits { get; set; }
 
-        public int DeveloperId { get; set; }
+        public int? DeveloperId { get; set; }
         [ForeignKey(nameof(DeveloperId))]
         public virtual Developer Developers { get; set; }
 
-        public int ProjectId { get; set; }
+        public int? ProjectId { get; set; }
         [ForeignKey(nameof(ProjectId))]
         public virtual Project Projects { get; set; }
     }

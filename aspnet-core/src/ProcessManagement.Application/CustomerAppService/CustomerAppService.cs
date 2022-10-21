@@ -1,21 +1,34 @@
 ﻿using Abp.Application.Services;
+using Abp.ObjectMapping;
 using Abp.Authorization.Users;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
+using Abp.ObjectMapping;
+using Abp.UI;
 using AutoMapper;
 using Castle.Windsor.Diagnostics;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
-using ProcessManagement.AllManagers;
+using ProcessManagement.AlManagerslar;
 using ProcessManagement.Authorization.Roles;
 using ProcessManagement.Authorization.Users;
 using ProcessManagement.CustomerAppService.CustomerDtos;
 using ProcessManagement.Customers;
+using ProcessManagement.Developers;
+using ProcessManagement.Deveoper.Dto;
+using ProcessManagement.Manager.Dto;
+using ProcessManagement.Missions.Dto;
+using ProcessManagement.Missions;
+using ProcessManagement.Profession.Dto;
+using ProcessManagement.Project.Dto;
 using ProcessManagement.Users.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using IObjectMapper = AutoMapper.IObjectMapper;
+using ProcessManagement.CustomMapper;
 
 namespace ProcessManagement.CustomerAppService
 {
@@ -25,17 +38,20 @@ namespace ProcessManagement.CustomerAppService
         private readonly UserCreateManager _userCreateManager;
         private readonly IRepository<Customer> _repository;
         private readonly IRepository<User, long> _userRepository;
+        private readonly CustomMapperManager _mapper;
         public CustomerAppService(
             UserManager userManager,
             IRepository<User, long> userRepository,
             IRepository<Customer> repository,
-            UserCreateManager userCreateManager
+            UserCreateManager userCreateManager,
+            CustomMapperManager mapper
             )
         {
             _userManager = userManager;
             _userRepository = userRepository;
             _repository = repository;
             _userCreateManager = userCreateManager;
+            _mapper = mapper;
         }
 
 
@@ -44,43 +60,37 @@ namespace ProcessManagement.CustomerAppService
         /// </summary>
         public async Task Create(CustomerDto input)
         {
-            _userCreateManager.CreateUser("Customer", Map(input.CreateUserDto));
-            var user = await _userRepository.GetAll().Where(q=>q.UserName==input.CreateUserDto.UserName).FirstOrDefaultAsync();
+
+            var newUser = _userCreateManager.CreateUser("Customer",input.CreateUserDto);
+            if (newUser==null)
+            {
+                throw new UserFriendlyException("Sistem tarafindfaan hata oluştu");
+            }
             var newCustomer = new Customer
             {
-                User = user,
+                User = newUser.Result,
             };
             await _repository.InsertAsync(newCustomer);
         }
         public async Task Update(int id ,GetCustomerDto input)
         {
-            var customerentity = await _repository.GetAll().Include(q => q.User).Where(a => a.Id == id).FirstOrDefaultAsync();
-            customerentity.User.Name = input.UserDto.Name;
-            customerentity.User.Surname = input.UserDto.Surname;
-            customerentity.User.EmailAddress = input.UserDto.EmailAddress;
-            customerentity.User.PhoneNumber = input.UserDto.PhoneNumber;
-            await _userManager.UpdateAsync(customerentity.User);
+            var customerentity = _repository.GetAll().Include(q => q.User).Where(a => a.Id == id).FirstOrDefault();
+            await _userCreateManager.UpdateUser(customerentity.User, input.UserDto);
         }
-        public async Task<List<GetCustomerDto>> GetFilst()
+        public async Task<List<GetCustomerDto>> GetList()
         {
             var entityList = await _repository.GetAll().Include(q => q.User).ToListAsync();
-            return entityList.Select(q => new GetCustomerDto
-            {
-                UserDto=Map(q.User),
-                Id=q.Id,
-                
-            }).ToList();
+            return entityList.Select(q =>_mapper.Map(q) ).ToList();
         }
-        public async Task<List<GetCustomerDto>> GetPaginated(int pageSize , int pageNumber)
+        public async Task<List<GetCustomerDto>> GetPaginatedList(int pageSize , int pageNumber)
         {
             var PageSize = pageSize;
             var PageShow = (pageNumber - 1) * PageSize;
             var entityList = await _repository.GetAll().Include(q => q.User).Skip((int)PageShow).Take((int)PageSize).ToListAsync();
             return entityList.Select(q => new GetCustomerDto
             {
-                UserDto = Map(q.User),
                 Id = q.Id,
-
+                UserDto = _mapper.Map(q.User),
             }).ToList();
         }
         public async Task<GetCustomerDto> GetById(int id)
@@ -88,7 +98,7 @@ namespace ProcessManagement.CustomerAppService
             var entity = await _repository.GetAll().Where(q=>q.Id==id).Include(q => q.User).FirstOrDefaultAsync();
             var Dto = new GetCustomerDto();
             Dto.Id = entity.Id;
-            Dto.UserDto=Map(entity.User);
+            Dto.UserDto= _mapper.Map(entity.User);
             return Dto;
         }
         public async Task Delete(int id)
@@ -97,53 +107,6 @@ namespace ProcessManagement.CustomerAppService
             await _userRepository.DeleteAsync(entity.User.Id);
             await _repository.DeleteAsync(id);
         }
-        
-        
-        
-        #region User
-        private Users.Dto.UserDto Map(User e)
-        {
-            return new Users.Dto.UserDto
-            {
-                Id = e.Id,
-                UserName = e.UserName,
-                Surname = e.Surname,
-                CreationTime = e.CreationTime,
-                EmailAddress=e.EmailAddress,
-                PhoneNumber=e.PhoneNumber,
-                FullName=e.FullName,
-                Name = e.Name,
-                IsActive = e.IsActive
-            };
-        }
-        private User Map(Users.Dto.UserDto e)
-        {
-            return new User
-            {
-                Id = e.Id,
-                UserName = e.UserName,
-                Surname = e.Surname,
-                CreationTime = e.CreationTime,
-                EmailAddress = e.EmailAddress,
-                PhoneNumber=e.PhoneNumber,
-                Name = e.Name,
-                IsActive = e.IsActive
-            };
-        }
-        private User Map(CreateUserDto e)
-        {
-            return new User
-            {
-                Id = 0,
-                UserName = e.UserName,
-                Surname = e.Surname,
-                CreationTime = DateTime.Now,
-                EmailAddress = e.EmailAddress,
-                PhoneNumber = e.PhoneNumber,
-                Name = e.Name,
-                IsActive = e.IsActive,
-            };
-        }
-        #endregion
+
     }
 }

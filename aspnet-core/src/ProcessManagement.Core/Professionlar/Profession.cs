@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ProcessManagement.Professions
+namespace ProcessManagement.Professionlar
 {
     [Table("Professions")]
     public class Profession: FullAuditedEntity

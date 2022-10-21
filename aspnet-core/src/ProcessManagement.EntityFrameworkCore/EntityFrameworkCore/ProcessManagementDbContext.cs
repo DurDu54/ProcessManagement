@@ -7,7 +7,7 @@ using ProcessManagement.Customers;
 using ProcessManagement.Managers;
 using ProcessManagement.Developers;
 using ProcessManagement.Projects;
-using ProcessManagement.Professions;
+using ProcessManagement.Professionlar;
 using ProcessManagement.Missions;
 
 namespace ProcessManagement.EntityFrameworkCore
