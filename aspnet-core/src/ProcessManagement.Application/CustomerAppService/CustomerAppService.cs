@@ -1,34 +1,15 @@
 ﻿using Abp.Application.Services;
-using Abp.ObjectMapping;
-using Abp.Authorization.Users;
 using Abp.AutoMapper;
 using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
 using Abp.UI;
-using AutoMapper;
-using Castle.Windsor.Diagnostics;
-using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.EntityFrameworkCore;
 using ProcessManagement.AlManagerslar;
-using ProcessManagement.Authorization.Roles;
 using ProcessManagement.Authorization.Users;
 using ProcessManagement.CustomerAppService.CustomerDtos;
 using ProcessManagement.Customers;
-using ProcessManagement.Developers;
-using ProcessManagement.Deveoper.Dto;
-using ProcessManagement.Manager.Dto;
-using ProcessManagement.Missions.Dto;
-using ProcessManagement.Missions;
-using ProcessManagement.Profession.Dto;
-using ProcessManagement.Project.Dto;
-using ProcessManagement.Users.Dto;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using IObjectMapper = AutoMapper.IObjectMapper;
-using ProcessManagement.CustomMapper;
 
 namespace ProcessManagement.CustomerAppService
 {

@@ -8,7 +8,7 @@ namespace ProcessManagement.Manager.Dto
     public class GetManagerDto
     {
         public int Id { get; set; }
-        public virtual UserDto User { get; set; }
+        public virtual UserDto UserDto { get; set; }
         public List<GetProjectDto> Projects { get; set; }
     }
 }

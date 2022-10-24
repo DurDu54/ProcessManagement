@@ -17,7 +17,7 @@ namespace ProcessManagement.Deveoper.Dto
     {
         public int Id { get; set; }
         public virtual UserDto UserDto { get; set; }
-        public virtual GetProfessionDto ProfessionDto { get; set; }
+        public int ProfessionId { get; set; }
         public List<GetProjectDto> Projects { get; set; }
         public List<GetMissionDto> Missions { get; set; }
 

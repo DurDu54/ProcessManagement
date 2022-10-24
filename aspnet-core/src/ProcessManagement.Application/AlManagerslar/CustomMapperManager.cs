@@ -11,20 +11,14 @@ using ProcessManagement.Profession.Dto;
 using ProcessManagement.Project.Dto;
 using ProcessManagement.Users.Dto;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Abp.ObjectMapping;
 
-namespace ProcessManagement.CustomMapper
+namespace ProcessManagement.AlManagerslar
 {
     public class CustomMapperManager : IDomainService
     {
-        private readonly IObjectMapper _mapper;
-        public CustomMapperManager(IObjectMapper mapper)
+        public CustomMapperManager()
         {
-            _mapper = mapper;
         }
         #region User
         public UserDto Map(User e)
@@ -65,10 +59,7 @@ namespace ProcessManagement.CustomMapper
             {
                 Id = e.Id,
                 User = Map(e.UserDto),
-                Profession = Map(e.ProfessionDto),
-                //Projects = Map(e.Projects),
-                Missions = Map(e.Missions)
-
+                ProfessionId = e.ProfessionId
             };
         }
         public GetDeveloperDto Map(Developer e)
@@ -77,22 +68,27 @@ namespace ProcessManagement.CustomMapper
             {
                 Id = e.Id,
                 UserDto = Map(e.User),
-                ProfessionDto = Map(e.Profession),
-                Missions = Map(e.Missions),
-                //Projects=Map(e.Projects),
+                ProfessionId = e.Profession.Id,
+                Missions = e.Missions.Select(q => new GetMissionDto
+                {
+                    Id = q.Id,
+                    Text = q.Text,
+                    BeginTime = q.BeginTime,
+                    Status = q.Status,
+                    ProjectId = q.ProjectId
+                }).ToList(),
+                Projects = e.Projects.Select(q => new GetProjectDto
+                {
+                    Id = q.Id,
+                    Name = q.Name,
+                    BeginTime = q.BeginTime,
+                    CustomerId = q.CustomerId,
+                    EndTime = q.EndTime,
+                    ManagerId = q.ManagerId,
+                    Status = q.Status,
+                }).ToList(),
 
             };
-        }
-        #endregion
-        #region ListDeveloper
-        public ICollection<Developer> Map(List<GetDeveloperDto> developers)
-        {
-            return _mapper.Map<ICollection<Developer>>(developers);
-        }
-        public List<GetDeveloperDto> Map(ICollection<Developer> developers)
-        {
-            return _mapper.Map<List<GetDeveloperDto>>(developers);
-
         }
         #endregion
         #region Professionlar
@@ -102,6 +98,7 @@ namespace ProcessManagement.CustomMapper
             {
                 Id = e.Id,
                 Text = e.Text,
+
             };
         }
         public GetProfessionDto Map(Professionlar.Profession e)
@@ -119,13 +116,12 @@ namespace ProcessManagement.CustomMapper
             return new Projects.Project
             {
                 Id = e.Id,
-                Status = e.Status,
+                Name = e.Name,
                 BeginTime = e.BeginTime,
                 EndTime = e.EndTime,
-                Customer = Map(e.CustomerDto),
-                Manager = Map(e.ManagerDto),
-                Developers = Map(e.Developers),
-                Missions = Map(e.Missions)
+                Status = e.Status,
+                CustomerId = e.CustomerId,
+                ManagerId = e.ManagerId,
             };
         }
         public GetProjectDto Map(Projects.Project e)
@@ -133,26 +129,29 @@ namespace ProcessManagement.CustomMapper
             return new GetProjectDto
             {
                 Id = e.Id,
-                Status = e.Status,
+                Name = e.Name,
                 BeginTime = e.BeginTime,
                 EndTime = e.EndTime,
-                CustomerDto = Map(e.Customer),
-                ManagerDto = Map(e.Manager),
-                Developers = Map(e.Developers),
-                Missions = Map(e.Missions),
+                Status = e.Status,
+                CustomerId = e.CustomerId,
+                ManagerId = e.ManagerId,
+
+            };
+        }
+        public Projects.Project Map(CreateProjectDto e)
+        {
+            return new Projects.Project
+            {
+                Id = e.Id,
+                Name = e.Name,
+                Status = e.Status,
+                BeginTime = DateTime.Now,
+                EndTime = e.EndTime,
+                CustomerId = e.CustomerId,
+                ManagerId = e.ManagerId,
             };
         }
 
-        #endregion
-        #region ListProject
-        public ICollection<Projects.Project> Map(List<GetProjectDto> p)
-        {
-            return _mapper.Map<ICollection<Projects.Project>>(p);
-        }
-        public List<GetProjectDto> Map(ICollection<Projects.Project> p)
-        {
-            return _mapper.Map<List<GetProjectDto>>(p);
-        }
         #endregion
         #region Customer
         public Customer Map(GetCustomerDto c)
@@ -161,7 +160,6 @@ namespace ProcessManagement.CustomMapper
             {
                 Id = c.Id,
                 User = Map(c.UserDto),
-
             };
         }
         public GetCustomerDto Map(Customer c)
@@ -179,34 +177,52 @@ namespace ProcessManagement.CustomMapper
             return new Managers.Manager
             {
                 Id = m.Id,
-                User = Map(m.User),
-                Projects = Map(m.Projects)
+                User = Map(m.UserDto),
             };
         }
-
-
 
         public GetManagerDto Map(Managers.Manager m)
         {
             return new GetManagerDto
             {
                 Id = m.Id,
-                User = Map(m.User),
-                Projects = Map(m.Projects),
+                UserDto = Map(m.User),
+                Projects = m.Projects.Select(q => new GetProjectDto
+                {
+                    Id = q.Id,
+                    Name = q.Name,
+                    Status = q.Status,
+                    BeginTime = q.BeginTime,
+                    CustomerId = q.Customer.Id,
+                    ManagerId = q.Manager.Id,
+                    EndTime = q.EndTime,
+                }).ToList(),
             };
         }
 
 
         #endregion
-        #region ListMission
-        public ICollection<Mission> Map(List<GetMissionDto> m)
+        #region Commit
+        public Commit Map(GetCommitDto e)
         {
-            return _mapper.Map<ICollection<Mission>>(m);
+            return new Commit
+            {
+                Id = e.Id,
+                Text = e.Text,
+                MissionId = e.MissionId,
+                CreationTime = DateTime.Now,
+            };
         }
-        public List<GetMissionDto> Map(ICollection<Mission> m)
+        public GetCommitDto Map(Commit e)
         {
-            return _mapper.Map<List<GetMissionDto>>(m);
+            return new GetCommitDto
+            {
+                Id = e.Id,
+                Text = e.Text,
+                MissionId = e.MissionId,
+            };
         }
+
         #endregion
     }
 }

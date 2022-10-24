@@ -23,14 +23,11 @@ namespace ProcessManagement.AlManagerslar
     {
         private readonly UserManager _userManager;
         private readonly IRepository<User, long> _repository;
-        private readonly IObjectMapper _mapper;
         public UserCreateManager(
-            IRepository<User, long> repository
-            , IObjectMapper mapper,
+            IRepository<User, long> repository,
             UserManager userManager)
         {
             _repository = repository;
-            _mapper = mapper;
             _userManager = userManager;
         }
 
@@ -65,18 +62,5 @@ namespace ProcessManagement.AlManagerslar
             await _userManager.UpdateAsync(user);
         }
 
-        //input.CreateUserDto.RoleNames[0] = "Customer";
-        //    var newUser = new User
-        //    {
-        //        UserName = input.CreateUserDto.UserName,
-        //        Name = input.CreateUserDto.Name,
-        //        Surname = input.CreateUserDto.Surname,
-        //        EmailAddress = input.CreateUserDto.EmailAddress,
-        //        PhoneNumber = input.CreateUserDto.PhoneNumber,
-        //        Password = input.CreateUserDto.Password,
-
-        //    };
-        //await _userManager.CreateAsync(newUser);
-        //await _userManager.SetRolesAsync(newUser, input.CreateUserDto.RoleNames);
     }
 }

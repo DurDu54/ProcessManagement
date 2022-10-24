@@ -1,25 +1,10 @@
 ﻿using Abp.Domain.Repositories;
-using Abp.ObjectMapping;
 using Abp.UI;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ProcessManagement.AlManagerslar;
 using ProcessManagement.Authorization.Users;
-using ProcessManagement.CustomerAppService.CustomerDtos;
-using ProcessManagement.Customers;
-using ProcessManagement.CustomMapper;
 using ProcessManagement.Developers;
 using ProcessManagement.Deveoper.Dto;
-using ProcessManagement.Manager.Dto;
-using ProcessManagement.Managers;
-using ProcessManagement.Missions;
-using ProcessManagement.Missions.Dto;
-using ProcessManagement.Profession.Dto;
-using ProcessManagement.Professionlar;
-using ProcessManagement.Project.Dto;
-using ProcessManagement.Projects;
-using ProcessManagement.Users.Dto;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -74,19 +59,36 @@ namespace ProcessManagement.Deveoper
         }
         public async Task<List<GetDeveloperDto>> GetList()
         {
-            var entityList = await _repository.GetAll().Include(q => q.User).Include(q => q.Profession).Include(q => q.Projects).Include(q =>q.Missions).ToListAsync();
+            var entityList = await _repository.GetAll()
+                .Include(q => q.User)
+                .Include(q => q.Profession)
+                .Include(q => q.Projects).ThenInclude(q=>q.Manager)
+                .Include(q =>q.Missions)
+                .ToListAsync();
             return entityList.Select(q => _mapper.Map(q)).ToList();
         }
         public async Task<List<GetDeveloperDto>> GetPaginatedList(int pageSize, int pageNumber)
         {
             var PageSize = pageSize;
             var PageShow = (pageNumber - 1) * PageSize;
-            var entityList = await _repository.GetAll().Include(q => q.User).Include(q => q.Profession).Include(q => q.Projects).Include(q => q.Missions).Skip((int)PageShow).Take((int)PageSize).ToListAsync();
+            var entityList = await _repository.GetAll()
+                .Include(q => q.User)
+                .Include(q => q.Profession)
+                .Include(q => q.Projects).ThenInclude(q => q.Manager)
+                .Include(q => q.Missions)
+                .Skip((int)PageShow).Take((int)PageSize)
+                .ToListAsync();
             return entityList.Select(q => _mapper.Map(q)).ToList();
         }
         public async Task<GetDeveloperDto> GetById(int id)
         {
-            var entity = await _repository.GetAll().Where(q => q.Id == id).Include(q => q.User).Include(q => q.Profession).Include(q => q.Projects).Include(q => q.Missions).FirstOrDefaultAsync();
+            var entity = await _repository.GetAll()
+                .Where(q => q.Id == id)
+                .Include(q => q.User)
+                .Include(q => q.Profession)
+                .Include(q => q.Projects).ThenInclude(q => q.Manager)
+                .Include(q => q.Missions)
+                .FirstOrDefaultAsync();
 
             return _mapper.Map(entity);
         }

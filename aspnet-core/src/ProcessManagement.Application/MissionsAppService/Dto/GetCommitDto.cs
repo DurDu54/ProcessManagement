@@ -10,7 +10,7 @@ namespace ProcessManagement.Missions.Dto
     {
         public int Id { get; set; }
         public string Text { get; set; }
-        public virtual GetMissionDto Mission{ get; set; }
+        public int? MissionId { get; set; }
 
     }
 }

@@ -7,7 +7,7 @@ namespace ProcessManagement.Missions
     public class Commit : FullAuditedEntity
     {
         public string Text { get; set; }
-        public int MissionId { get; set; }
+        public int? MissionId { get; set; }
         [ForeignKey(nameof(MissionId))]
         public virtual Mission Missons { get; set; }
     }
