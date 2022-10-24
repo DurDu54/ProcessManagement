@@ -17,9 +17,19 @@ namespace ProcessManagement.Missions.Dto
         public DateTime BeginTime { get; set; }
         public DateTime EndTime { get; set; }
         public List<GetCommitDto> Commits { get; set; }
-        public GetDeveloperDto? Developer{ get; set; }
-        public virtual GetProjectDto ProjectDto { get; set; }
+        public int? DeveoperId { get; set; }
         public int? ProjectId { get; set; }
 
+    }
+
+    public class CreateMissionDto
+    {
+        public int Id { get; set; }
+        public string Text { get; set; }
+        public StatusMission Status { get; set; }
+        public DateTime BeginTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public int? ProjectId { get; set; }
+        public int? DeveloperId { get; set; }
     }
 }

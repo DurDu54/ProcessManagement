@@ -224,5 +224,34 @@ namespace ProcessManagement.AlManagerslar
         }
 
         #endregion
+        #region Missions
+        public Mission Map(GetMissionDto e)
+        {
+            return new Mission
+            {
+                Id = e.Id,
+                Text = e.Text,
+                BeginTime=e.BeginTime,
+                ProjectId=e.ProjectId,
+                EndTime=e.EndTime,
+                Status=e.Status,
+                CreationTime = DateTime.Now,
+            };
+        }
+        public GetMissionDto Map(Mission e)
+        {
+            return new GetMissionDto
+            {
+                Id = e.Id,
+                Text = e.Text,
+                BeginTime = e.BeginTime,
+                EndTime = e.EndTime,
+                ProjectId = e.ProjectId,
+                Status = e.Status,
+                Commits = e.Commits.Select(e => Map(e)).ToList(),
+                DeveoperId = e.DeveloperId.HasValue && e.DeveloperId != 0 ? e.DeveloperId.Value : null,
+            };
+        }
+        #endregion
     }
 }
