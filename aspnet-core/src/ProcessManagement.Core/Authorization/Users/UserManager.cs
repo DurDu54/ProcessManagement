@@ -12,6 +12,7 @@ using Abp.Organizations;
 using Abp.Runtime.Caching;
 using ProcessManagement.Authorization.Roles;
 using Abp.Authorization.Roles;
+using System.Threading.Tasks;
 
 namespace ProcessManagement.Authorization.Users
 {
@@ -57,5 +58,7 @@ namespace ProcessManagement.Authorization.Users
               userLoginRepository)
         {
         }
+
+       
     }
 }

@@ -26,7 +26,7 @@ namespace ProcessManagement.Missions
         [ForeignKey(nameof(DeveloperId))]
         public virtual Developer Developers { get; set; }
 
-        public int? ProjectId { get; set; }
+        public int ProjectId { get; set; }
         [ForeignKey(nameof(ProjectId))]
         public virtual Project Projects { get; set; }
     }

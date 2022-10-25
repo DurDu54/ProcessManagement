@@ -17,8 +17,8 @@ namespace ProcessManagement.Missions.Dto
         public DateTime BeginTime { get; set; }
         public DateTime EndTime { get; set; }
         public List<GetCommitDto> Commits { get; set; }
-        public int? DeveoperId { get; set; }
-        public int? ProjectId { get; set; }
+        public int? DeveloperId { get; set; }
+        public int ProjectId { get; set; }
 
     }
 
@@ -29,7 +29,7 @@ namespace ProcessManagement.Missions.Dto
         public StatusMission Status { get; set; }
         public DateTime BeginTime { get; set; }
         public DateTime EndTime { get; set; }
-        public int? ProjectId { get; set; }
+        public int ProjectId { get; set; }
         public int? DeveloperId { get; set; }
     }
 }

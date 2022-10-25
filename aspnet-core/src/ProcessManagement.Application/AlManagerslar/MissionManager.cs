@@ -1,9 +1,11 @@
-﻿using Abp.Domain.Repositories;
+﻿using Abp.Domain.Entities;
+using Abp.Domain.Repositories;
 using Abp.Domain.Services;
 using Abp.Runtime.Session;
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
 using ProcessManagement.Authorization.Users;
+using ProcessManagement.Developers;
 using ProcessManagement.Missions;
 using ProcessManagement.Missions.Dto;
 using ProcessManagement.Users.Dto;
@@ -21,12 +23,23 @@ namespace ProcessManagement.AlManagerslar
     {
         private readonly IRepository<Missions.Mission> _missionRepository;
         private readonly IRepository<Missions.Commit> _commitRepository;
+        private readonly IRepository<Developer> _developerRepository;
+        private readonly IRepository<Managers.Manager> _managertRepository;
+        private readonly IRepository<Customers.Customer> _customertRepository;
         private readonly IRepository<User, long> _userRepo;
         private readonly CustomMapperManager _mapper;
         private readonly IAbpSession _session;
         private long _userId;
         private User _user;
-        public MissionManager(IRepository<Missions.Commit> commitRepository, IRepository<Missions.Mission> missionRepository, CustomMapperManager customMapperManager, IAbpSession session, IRepository<User, long> userRepo)
+        //private Customers.Customer _customer;
+        //private Managers.Manager _manager;
+        //private Developer _developer;
+        public MissionManager(
+            IRepository<Missions.Commit> commitRepository,
+            IRepository<Missions.Mission> missionRepository,
+            CustomMapperManager customMapperManager,
+            IAbpSession session,
+            IRepository<User, long> userRepo)
         {
             _commitRepository = commitRepository;
             _missionRepository = missionRepository;
@@ -34,47 +47,24 @@ namespace ProcessManagement.AlManagerslar
             _session = session;
             _userId = (long)session.UserId;
             _userRepo = userRepo;
-            GetUser();
         }
-        private void GetUser()
-        {
-            _user= _userRepo.Get(_userId);
-            foreach (var item in _user.Roles)
-            {
-                switch (item.RoleId)
-                {
-                    case 1:
-                        //Admin
-                        break;
-                    case 2:
-                        //Customer
-                        break;
-                    case 3:
-                        //Developer
-                        break;
-                    case 4:
-                        //Manager
-                        break;
-                    default:
-                        //Admin
-                        break;
-                }
-            }
-        }
+
         public async Task CreateMission(CreateMissionDto input)
         {
             var entity = new Mission();
             entity.Id = 0;
             entity.ProjectId = input.ProjectId;
-            entity.Text=input.Text;
-            entity.Id=input.Id;
-            entity.Status=input.Status;
-            entity.BeginTime=input.BeginTime;
-            entity.EndTime=input.EndTime;
-            entity.DeveloperId = input.DeveloperId;            
-            await _missionRepository.InsertAsync(entity);
+            entity.Text = input.Text;
+            entity.Id = input.Id;
+            entity.Status = input.Status;
+            entity.BeginTime = input.BeginTime;
+            entity.EndTime = input.EndTime;
+            entity.DeveloperId = input.DeveloperId;
+            await _missionRepository.InsertAndGetIdAsync(entity);
+
+
         }
-        public async Task UpdateMission (GetMissionDto input)
+        public async Task UpdateMission(GetMissionDto input)
         {
             var entity = _missionRepository.Get(input.Id);
             if (entity.CreatorUserId != _userId)
@@ -85,7 +75,7 @@ namespace ProcessManagement.AlManagerslar
         }
         public async Task<List<GetMissionDto>> ListMission()
         {
-            var missionList = await _missionRepository.GetAll().Include(q=>q.Developers).Include(q=>q.Commits).Include(q => q.Projects).ToListAsync();
+            var missionList = await _missionRepository.GetAll().Include(q => q.Developers).Include(q => q.Commits).Include(q => q.Projects).ToListAsync();
             return missionList.Select(q => _mapper.Map(q)).ToList();
         }
         public async Task<List<GetMissionDto>> PaginatedListMission(int pageNumber, int pageSize)
@@ -100,9 +90,9 @@ namespace ProcessManagement.AlManagerslar
         public async Task DeleteMission(int id)
         {
             var entity = _missionRepository.Get(id);
-            if (entity.CreatorUserId!=_userId)
+            if (entity.CreatorUserId != _userId)
             {
-                throw new UserFriendlyException("Sadece missionu oluşturan silebilir");
+                throw new UserFriendlyException("Sadece missionu oluşturan silebilir") ;
             }
             await _missionRepository.DeleteAsync(id);
         }
@@ -119,9 +109,10 @@ namespace ProcessManagement.AlManagerslar
             var entity = _commitRepository.Get(input.Id);
             if (entity.CreatorUserId != _userId)
             {
-                throw new UserFriendlyException("Sadece commiti oluşturan silebilir");
+                throw new UserFriendlyException("Sadece commiti oluşturan Güncelleyebilir");
             }
-            await _commitRepository.UpdateAsync(_mapper.Map(input));
+            entity.Text = input.Text;
+            await _commitRepository.UpdateAsync(entity);
 
         }
         public async Task<List<GetCommitDto>> ListCommit()

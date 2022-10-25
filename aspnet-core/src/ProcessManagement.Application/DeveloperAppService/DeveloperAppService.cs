@@ -5,7 +5,11 @@ using ProcessManagement.AlManagerslar;
 using ProcessManagement.Authorization.Users;
 using ProcessManagement.Developers;
 using ProcessManagement.Deveoper.Dto;
+using ProcessManagement.Enums;
+using ProcessManagement.Missions.Dto;
+using ProcessManagement.Project.Dto;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,22 +18,36 @@ namespace ProcessManagement.Deveoper
     public class DeveloperAppService : IDeveloperAppService
     {
         private readonly UserCreateManager _userCreateManager;
+        private readonly MissionManager _missionManager;
+
         private readonly IRepository<Developer> _repository;
+        private readonly IRepository<Missions.Mission> _missionRepository;
+        private readonly IRepository<Missions.Commit> _commitRepository;
         private readonly IRepository<User, long> _userRepository;
         private readonly IRepository<Professionlar.Profession> _professionRepository;
         private readonly CustomMapperManager _mapper;
+        private readonly IRepository<Projects.Project> _projectRepository;
+
         public DeveloperAppService(
             IRepository<User, long> userRepository,
             IRepository<Developer> repository,
             UserCreateManager userCreateManager,
             IRepository<Professionlar.Profession> professionRepository,
-            CustomMapperManager mapper)
+            CustomMapperManager mapper,
+            IRepository<Projects.Project> projectRepository,
+            IRepository<Missions.Mission> missionRepository,
+            IRepository<Missions.Commit> commitRepository,
+            MissionManager missionManager)
         {
             _userRepository = userRepository;
             _repository = repository;
             _userCreateManager = userCreateManager;
             _professionRepository = professionRepository;
             _mapper = mapper;
+            _projectRepository = projectRepository;
+            _missionRepository = missionRepository;
+            _commitRepository = commitRepository;
+            _missionManager = missionManager;
         }
         /// <summary>
         /// RoleNamese boşta olsa değer yolla yoksa patlarsın
@@ -37,7 +55,8 @@ namespace ProcessManagement.Deveoper
         public async Task Create(DeveloperDto input)
         {
             var prof = await _professionRepository.GetAsync(input.ProfessionId);
-            var newUser = _userCreateManager.CreateUser("Developer", input.CreateUserDto);
+            var newUserId = _userCreateManager.CreateUser("Developer", input.CreateUserDto);
+            var newUser = _userRepository.GetAsync(newUserId.Result).Result;
             if (newUser == null)
             {
                 throw new UserFriendlyException("Sistem tarafindfaan hata oluştu");
@@ -45,7 +64,7 @@ namespace ProcessManagement.Deveoper
             var newDeveloper = new Developer
             {
                 Id = 0,
-                User = newUser.Result,
+                User = newUser,
                 ProfessionId = prof.Id,
                 Profession = prof,
             };
@@ -67,7 +86,7 @@ namespace ProcessManagement.Deveoper
                 .ToListAsync();
             return entityList.Select(q => _mapper.Map(q)).ToList();
         }
-        public async Task<List<GetDeveloperDto>> GetPaginatedList(int pageSize, int pageNumber)
+        public async Task<List<GetDeveloperDto>> GetPaginatedList(int pageSize = 10, int pageNumber = 1)
         {
             var PageSize = pageSize;
             var PageShow = (pageNumber - 1) * PageSize;
@@ -98,5 +117,46 @@ namespace ProcessManagement.Deveoper
             await _userRepository.DeleteAsync(entity.User.Id);
             await _repository.DeleteAsync(id);
         }
+        public async Task<List<GetProjectDto>> GetMyProject(long devId, int pageSize = 10, int pageNumber = 1)
+        {
+            var PageSize = pageSize;
+            var PageShow = (pageNumber - 1) * PageSize;
+            var projects = await _projectRepository.GetAll()
+                .Include(q => q.Manager).ThenInclude(q => q.User)
+                .Include(q => q.Customer).ThenInclude(q => q.User)
+                .Include(q => q.Developers).ThenInclude(q => q.User)
+                .Include(q => q.Missions)
+                .Skip((int)PageShow).Take((int)PageSize)
+                .Where(q => q.Developers.Select(a => a.Id == devId).FirstOrDefault()).ToListAsync();
+            return projects.Select(q => _mapper.Map(q)).ToList();
+        }
+        public async Task<List<GetMissionDto>> GetMyMissions(int devId, int pageSize = 10, int pageNumber = 1)
+        {
+            var PageSize = pageSize;
+            var PageShow = (pageNumber - 1) * PageSize;
+            var list=  await _missionRepository.GetAll()
+                .Include(q=>q.Commits)
+                .Where(q => q.DeveloperId == devId)
+                .Skip((int)PageShow).Take((int)PageSize)
+                .ToListAsync();
+            return list.Select(q => _mapper.Map(q)).ToList();
+        }
+        public async Task UpdateMissionStatus(int id , StatusMission status)
+        {
+            var entity = _missionRepository.Get(id);
+            entity.Status = status;
+            await _missionRepository.UpdateAsync(entity);
+        }
+        public async Task CreateCommit(GetCommitDto input) => await _missionManager.CreateCommit(input);
+        public async Task<List<GetCommitDto>> GetListMissionCommits(int missionId, int pageNumber=1, int pageSize=10)
+        {
+            var PageSize = pageSize;
+            var PageShow = (pageNumber - 1) * PageSize;
+            var list = await _commitRepository.GetAll().Where(q => q.MissionId == missionId).ToListAsync();
+            return list.Select(q => _mapper.Map(q)).ToList();
+        }
+        public async Task UpdateCommit(GetCommitDto input) => await _missionManager.UpdateCommit(input);
+        public async Task DeleteCommit(int commitId) => await _missionManager.DeleteCommit(commitId);
+
     }
 }

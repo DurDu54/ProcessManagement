@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 namespace ProcessManagement.MissionsAppService
 {
     public interface IMissionAppService : IApplicationService { }
-    public interface ICommitAppService : IApplicationService { }
     public class MissionAppService: IMissionAppService
     {
         private readonly MissionManager _manager;

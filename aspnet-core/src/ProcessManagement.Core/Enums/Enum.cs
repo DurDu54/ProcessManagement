@@ -8,10 +8,18 @@ namespace ProcessManagement.Enums
 {
     public enum StatusProject
     {
-
+        ToDo = 1,
+        InProgress = 2,
+        CodeReview = 3,
+        Done = 4,
+        NotStarting = 5,
     }
     public enum StatusMission
     {
-
+        ToDo = 1,
+        InProgress = 2,
+        CodeReview = 3,
+        Done = 4,
+        NotStarting = 5,
     }
 }

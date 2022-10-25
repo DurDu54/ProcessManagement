@@ -31,11 +31,12 @@ namespace ProcessManagement.AlManagerslar
             _userManager = userManager;
         }
 
-        public async Task<User> CreateUser(string roleName, CreateUserDto input)
+        public async Task<long> CreateUser(string roleName, CreateUserDto input)
         {
             input.RoleNames[0] = roleName;
             var user = new User
             {
+                Id = 0,
                 UserName = input.UserName,
                 Name = input.Name,
                 Surname = input.Surname,
@@ -44,10 +45,10 @@ namespace ProcessManagement.AlManagerslar
                 Password = input.Password,
 
             };
-            await _userManager.CreateAsync(user);
+            var a = await _userManager.CreateAsync(user, input.Password);
             await _userManager.SetRolesAsync(user, input.RoleNames);
             var newUser = await _repository.GetAll().Where(q => q.UserName == input.UserName).FirstOrDefaultAsync();
-            return newUser;
+            return newUser.Id;
         }
 
         public async Task UpdateUser(User user,UserDto userDto)

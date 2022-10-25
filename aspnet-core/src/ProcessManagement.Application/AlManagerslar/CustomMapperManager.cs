@@ -249,7 +249,7 @@ namespace ProcessManagement.AlManagerslar
                 ProjectId = e.ProjectId,
                 Status = e.Status,
                 Commits = e.Commits.Select(e => Map(e)).ToList(),
-                DeveoperId = e.DeveloperId.HasValue && e.DeveloperId != 0 ? e.DeveloperId.Value : null,
+                DeveloperId = e.DeveloperId.HasValue && e.DeveloperId != 0 ? e.DeveloperId.Value : null,
             };
         }
         #endregion
