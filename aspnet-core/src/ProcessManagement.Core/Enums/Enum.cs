@@ -12,7 +12,6 @@ namespace ProcessManagement.Enums
         InProgress = 2,
         CodeReview = 3,
         Done = 4,
-        NotStarting = 5,
     }
     public enum StatusMission
     {
@@ -20,6 +19,5 @@ namespace ProcessManagement.Enums
         InProgress = 2,
         CodeReview = 3,
         Done = 4,
-        NotStarting = 5,
     }
 }

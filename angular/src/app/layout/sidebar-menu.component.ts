@@ -52,15 +52,15 @@ export class SidebarMenuComponent extends AppComponentBase implements OnInit {
                 'Pages.Roles'
             ),
             new MenuItem(
-                this.l('Tenants'),
-                '/app/tenants',
-                'fas fa-building',
-                'Pages.Tenants'
-            ),
-            new MenuItem(
                 this.l('Users'),
                 '/app/users',
                 'fas fa-users',
+                'Pages.Users'
+            ),
+            new MenuItem(
+                this.l('Customers'),
+                '/app/customer',
+                'fas fa-user',
                 'Pages.Users'
             ),
             new MenuItem(this.l('MultiLevelMenu'), '', 'fas fa-circle', '', [
