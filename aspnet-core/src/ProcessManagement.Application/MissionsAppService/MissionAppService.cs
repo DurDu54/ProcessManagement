@@ -33,6 +33,10 @@ namespace ProcessManagement.MissionsAppService
         {
             return await _manager.PaginatedListMission(pageNumber, pageSize);
         }
+        public async Task<List<GetMissionDto>> PaginatedListMissionByProject(int pageNumber, int pageSize, int projectid)
+        {
+            return await _manager.PaginatedListMissionByProject(pageNumber, pageSize, projectid);   
+        }
         public async Task DeleteMission(int id)
         {
             await _manager.DeleteMission(id);
