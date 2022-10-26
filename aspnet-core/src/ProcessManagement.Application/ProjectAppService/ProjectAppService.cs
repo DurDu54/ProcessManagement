@@ -2,6 +2,7 @@
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
 using ProcessManagement.AlManagerslar;
+using ProcessManagement.Enums;
 using ProcessManagement.Manager.Dto;
 using ProcessManagement.ManagerAppService.Dto;
 using ProcessManagement.Managers;
@@ -65,7 +66,20 @@ namespace ProcessManagement.ProjectAppService
         {
             var PageSize = pageSize;
             var PageShow = (pageNumber - 1) * PageSize;
-            var entityList = await _repository.GetAll()
+            var entityList = await _repository.GetAll().Where(a=>a.Status != Enums.StatusProject.Done)
+                .Include(q => q.Manager).ThenInclude(q => q.User)
+                .Include(q => q.Customer).ThenInclude(q => q.User)
+                .Include(q => q.Developers).ThenInclude(q => q.User)
+                .Include(q => q.Missions)
+                .Skip((int)PageShow).Take((int)PageSize)
+                .ToListAsync();
+            return entityList.Select(q => _mapper.Map(q)).ToList();
+        }
+        public async Task<List<GetProjectDto>> PaginatedListByStatus(int pageSize, int pageNumber,StatusProject status)
+        {
+            var PageSize = pageSize;
+            var PageShow = (pageNumber - 1) * PageSize;
+            var entityList = await _repository.GetAll().Where(q=>q.Status== status)
                 .Include(q => q.Manager).ThenInclude(q => q.User)
                 .Include(q => q.Customer).ThenInclude(q => q.User)
                 .Include(q => q.Developers).ThenInclude(q => q.User)

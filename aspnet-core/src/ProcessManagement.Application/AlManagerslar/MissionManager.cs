@@ -87,6 +87,15 @@ namespace ProcessManagement.AlManagerslar
             .ToListAsync();
             return entityList.Select(q => _mapper.Map(q)).ToList();
         }
+        public async Task<List<GetMissionDto>> PaginatedListMissionByProject(int pageNumber, int pageSize, int projectid)
+        {
+            var PageSize = pageSize;
+            var PageShow = (pageNumber - 1) * PageSize;
+            var entityList = await _missionRepository.GetAll().Where(q=>q.ProjectId == projectid)
+            .Skip((int)PageShow).Take((int)PageSize)
+            .ToListAsync();
+            return entityList.Select(q => _mapper.Map(q)).ToList();
+        }
         public async Task DeleteMission(int id)
         {
             var entity = _missionRepository.Get(id);
