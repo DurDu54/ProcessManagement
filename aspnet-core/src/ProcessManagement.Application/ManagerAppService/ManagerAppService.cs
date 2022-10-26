@@ -8,6 +8,7 @@ using ProcessManagement.Authorization.Users;
 using ProcessManagement.CustomerAppService.CustomerDtos;
 using ProcessManagement.Customers;
 using ProcessManagement.Developers;
+using ProcessManagement.Enums;
 using ProcessManagement.Manager.Dto;
 using ProcessManagement.ManagerAppService.Dto;
 using ProcessManagement.Missions.Dto;
@@ -138,6 +139,18 @@ namespace ProcessManagement.ManagerAppService
             project.EndTime = input.EndTime;
             await _projectRepository.UpdateAsync(project);
         }
+        public async Task UpdateProjectStatus(int id, StatusProject status)
+        {
+            var entity = _projectRepository.Get(id);
+            entity.Status = status;
+            await _projectRepository.UpdateAsync(entity);
+        }
+        public async Task UpdateProjectManager(int projectId,int newManagerId)
+        {
+            var entity = _projectRepository.Get(projectId);
+            entity.ManagerId = newManagerId;
+            await _projectRepository.UpdateAsync(entity);
+        }
         public async Task GiveDeveloperAcsesToTheProject(int projeId, int devId)
         {
             var project = _projectRepository.Get(projeId);
@@ -156,7 +169,6 @@ namespace ProcessManagement.ManagerAppService
             _developerRepository.Update(developer);
             _projectRepository.Update(project);
         }
-
         public async Task DeleteProject(int projetId) => await _projectRepository.DeleteAsync(projetId);
         public async Task CreateMission(CreateMissionDto input) => await _missionManager.CreateMission(input);
         public async Task<List<GetMissionDto>> GetMyMission(long managerId, int pageSize = 10, int pageNumber = 1)
@@ -182,8 +194,5 @@ namespace ProcessManagement.ManagerAppService
         }
         public async Task UpdateCommit(GetCommitDto input) => await _missionManager.UpdateCommit(input);
         public async Task DeleteCommit(int commitId) => await _missionManager.DeleteCommit(commitId);
-
-
-
     }
 }

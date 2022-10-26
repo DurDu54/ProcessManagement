@@ -46,6 +46,12 @@ namespace ProcessManagement.ProjectAppService
             project.EndTime = input.EndTime;
             await _repository.UpdateAsync(project);
         }
+        public async Task UpdateProjectManager(int projectId, int newManagerId)
+        {
+            var entity = _repository.Get(projectId);
+            entity.ManagerId = newManagerId;
+            await _repository.UpdateAsync(entity);
+        }
         public async Task<List<GetProjectDto>> List()
         {
             var entityList = await _repository.GetAll()

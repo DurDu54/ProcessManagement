@@ -130,6 +130,12 @@ namespace ProcessManagement.Deveoper
                 .Where(q => q.Developers.Select(a => a.Id == devId).FirstOrDefault()).ToListAsync();
             return projects.Select(q => _mapper.Map(q)).ToList();
         }
+        public async Task UpdateProJectStatus(int id, StatusProject status) 
+        {
+            var entity = _projectRepository.Get(id);
+            entity.Status = status;
+            await _projectRepository.UpdateAsync(entity);
+        }
         public async Task<List<GetMissionDto>> GetMyMissions(int devId, int pageSize = 10, int pageNumber = 1)
         {
             var PageSize = pageSize;
@@ -140,6 +146,11 @@ namespace ProcessManagement.Deveoper
                 .Skip((int)PageShow).Take((int)PageSize)
                 .ToListAsync();
             return list.Select(q => _mapper.Map(q)).ToList();
+        }
+        public async Task<List<GetDeveloperDto>> GetDeveloperByProject(int projectid)
+        {
+            var entity = await _projectRepository.GetAll().Where(q=>q.Id == projectid).Include(u=>u.Developers).FirstOrDefaultAsync();
+            return  entity.Developers.Select(q => _mapper.Map(q)).ToList();
         }
         public async Task UpdateMissionStatus(int id , StatusMission status)
         {
