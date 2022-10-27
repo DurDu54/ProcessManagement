@@ -1,0 +1,80 @@
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6">
+                <h1>{{ "Customers" | localize }}</h1>
+            </div>
+            <div class="col-6 text-right">
+                <a class="btn bg-blue">
+                    <i class="fa fa-plus-square"></i>
+                    {{ "Create Customer" | localize }}
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="content px-2">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead class="bg-light">
+                            <tr>
+                                <th class="w-25">{{ "Full Name" | localize }}</th>
+                                <th class="w-25">{{ "Email Address" | localize }}</th>
+                                <th class="w-25">{{ "Phone Number" | localize }}</th>
+                                <th class="w-25" >{{ "Actions" | localize }}</th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let cus of customerList
+                            |paginate: {id: 'customer',
+                            itemsPerPage: pageSize,
+                            currentPage: pageNumber,
+                            totalItems: totalItems}">
+                                <td>{{cus.userDto.fullName}}</td>
+                                <td>{{cus.userDto.emailAddress}}</td>
+                                <td>{{cus.userDto.phoneNumber}}</td>
+                                <td>
+                                    <a type="button" class="btn btn-sm bg-secondary m-1">
+                                        <i class="fas fa-pencil-alt"></i>
+                                        {{ "Edit" | localize }}
+                                    </a>
+                                    <a type="button" class="btn btn-sm bg-danger m-1">
+                                        <i class="fas fa-trash"></i>
+                                        {{ "Delete" | localize }}
+                                    </a>
+                                </td>
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card-footer table-card-footer bg-light border-top">
+                <div class="row">
+                    <div class="col-sm-4 col-12 text-sm-left text-center">
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-redo-alt"></i>
+                        </button>
+                    </div>
+                    <div class="col-sm-4 col-12 text-center">
+                        <p class="mb-0 my-2">
+                            {{ "TotalRecordsCount" | localize: totalItems }}
+                        </p>
+                    </div>
+                    <div class="col-sm-4 col-12">
+                        <div class="float-sm-right m-auto">
+                            <abp-pagination-controls id="customer" (pageChange)="getDataPage($event)" >
+                                
+                            </abp-pagination-controls>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
