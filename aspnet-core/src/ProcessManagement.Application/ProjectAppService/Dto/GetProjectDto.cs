@@ -19,6 +19,19 @@ namespace ProcessManagement.Project.Dto
         public StatusProject Status{ get; set; }
         public DateTime BeginTime { get; set; }
         public DateTime EndTime { get; set; }
+        public string BeginTimeStr {
+            get
+            {
+                return BeginTime.ToString("d");
+            }
+        }
+        public string EndTimeStr
+        {
+            get
+            {
+                return EndTime.ToString("d");
+            }
+        }
         public int? CustomerId{ get; set; }
         public int? ManagerId { get; set; }
 

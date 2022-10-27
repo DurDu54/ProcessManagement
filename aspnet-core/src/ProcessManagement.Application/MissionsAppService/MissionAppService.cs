@@ -1,5 +1,7 @@
 ﻿using Abp.Application.Services;
 using ProcessManagement.AlManagerslar;
+using ProcessManagement.Configuration.Dto;
+using ProcessManagement.Enums;
 using ProcessManagement.Missions.Dto;
 using System;
 using System.Collections.Generic;
@@ -56,6 +58,25 @@ namespace ProcessManagement.MissionsAppService
         public async Task<List<GetCommitDto>> PaginatedListCommit(int pageNumber, int pageSize)
         {
             return await _manager.PaginatedListCommit(pageNumber, pageSize);
+        }
+          public async Task<List<EnumListDto>> StatusListStr()
+        {
+            var enum1 = new EnumConvertDto() { Id = (int)StatusMission.ToDo, Text = "Yapilacak" };
+            var enum2 = new EnumConvertDto() { Id = (int)StatusMission.InProgress, Text = "Geliştirme Aşamasında" };
+            var enum3 = new EnumConvertDto() { Id = (int)StatusMission.CodeReview, Text = "Test Aşamasında" };
+            var enum4 = new EnumConvertDto() { Id = (int)StatusMission.Done, Text = "Tamamlandı" };
+
+            var enumlist = new List<EnumConvertDto>();
+            enumlist.Add(enum1);
+            enumlist.Add(enum2);
+            enumlist.Add(enum3);
+            enumlist.Add(enum4);
+
+            return enumlist.Select(e => new EnumListDto
+            {
+                Id = e.Id,
+                Text = e.Text,
+            }).ToList();
         }
         public async Task DeleteCommit(int id)
         {

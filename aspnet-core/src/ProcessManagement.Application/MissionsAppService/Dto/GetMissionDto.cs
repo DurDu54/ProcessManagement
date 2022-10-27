@@ -16,6 +16,20 @@ namespace ProcessManagement.Missions.Dto
         public StatusMission Status{ get; set; }
         public DateTime BeginTime { get; set; }
         public DateTime EndTime { get; set; }
+        public string BeginTimeStr
+        {
+            get
+            {
+                return BeginTime.ToString("d");
+            }
+        }
+        public string EndTimeStr
+        {
+            get
+            {
+                return EndTime.ToString("d");
+            }
+        }
         public List<GetCommitDto> Commits { get; set; }
         public int? DeveloperId { get; set; }
         public int ProjectId { get; set; }
