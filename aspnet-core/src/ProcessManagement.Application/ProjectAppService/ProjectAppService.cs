@@ -2,6 +2,7 @@
 using Abp.UI;
 using Microsoft.EntityFrameworkCore;
 using ProcessManagement.AlManagerslar;
+using ProcessManagement.Configuration.Dto;
 using ProcessManagement.Enums;
 using ProcessManagement.Manager.Dto;
 using ProcessManagement.ManagerAppService.Dto;
@@ -10,6 +11,7 @@ using ProcessManagement.Project.Dto;
 using ProcessManagement.Projects;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
@@ -101,6 +103,25 @@ namespace ProcessManagement.ProjectAppService
                 throw new UserFriendlyException("böyle bişi yok");
             }
             return _mapper.Map(entity);
+        }
+        public async Task<List<EnumListDto>> StatusListStr()
+        {
+            var enum1 = new EnumConvertDto() { Id = (int)StatusProject.ToDo, Text = "Yapilacak" };
+            var enum2 = new EnumConvertDto() { Id = (int)StatusProject.InProgress, Text = "Geliştirme Aşamasında" };
+            var enum3 = new EnumConvertDto() { Id = (int)StatusProject.CodeReview, Text = "Test Aşamasında" };
+            var enum4 = new EnumConvertDto() { Id = (int)StatusProject.Done, Text = "Tamamlandı" };
+
+            var enumlist = new List<EnumConvertDto>();
+            enumlist.Add(enum1);
+            enumlist.Add(enum2);
+            enumlist.Add(enum3);
+            enumlist.Add(enum4);
+
+            return enumlist.Select(e => new EnumListDto
+            {
+                Id = e.Id,
+                Text = e.Text,
+            }).ToList();
         }
         public async Task Delete(int id)
         {

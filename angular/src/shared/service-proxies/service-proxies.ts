@@ -3118,6 +3118,79 @@ export class MissionServiceProxy {
     }
 
     /**
+     * @param pageNumber (optional) 
+     * @param pageSize (optional) 
+     * @param projectid (optional) 
+     * @return Success
+     */
+    paginatedListMissionByProject(pageNumber: number | undefined, pageSize: number | undefined, projectid: number | undefined): Observable<GetMissionDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Mission/PaginatedListMissionByProject?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (projectid === null)
+            throw new Error("The parameter 'projectid' cannot be null.");
+        else if (projectid !== undefined)
+            url_ += "projectid=" + encodeURIComponent("" + projectid) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPaginatedListMissionByProject(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPaginatedListMissionByProject(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetMissionDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetMissionDto[]>;
+        }));
+    }
+
+    protected processPaginatedListMissionByProject(response: HttpResponseBase): Observable<GetMissionDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(GetMissionDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetMissionDto[]>(null as any);
+    }
+
+    /**
      * @param id (optional) 
      * @return Success
      */
@@ -3397,6 +3470,64 @@ export class MissionServiceProxy {
             }));
         }
         return _observableOf<GetCommitDto[]>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    statusListStr(): Observable<EnumListDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Mission/StatusListStr";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStatusListStr(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStatusListStr(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<EnumListDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<EnumListDto[]>;
+        }));
+    }
+
+    protected processStatusListStr(response: HttpResponseBase): Observable<EnumListDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(EnumListDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumListDto[]>(null as any);
     }
 
     /**
@@ -4050,6 +4181,79 @@ export class ProjectServiceProxy {
     }
 
     /**
+     * @param pageSize (optional) 
+     * @param pageNumber (optional) 
+     * @param body (optional) 
+     * @return Success
+     */
+    paginatedListByStatus(pageSize: number | undefined, pageNumber: number | undefined, body: StatusProject | undefined): Observable<GetProjectDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Project/PaginatedListByStatus?";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(body);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json-patch+json",
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processPaginatedListByStatus(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processPaginatedListByStatus(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GetProjectDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GetProjectDto[]>;
+        }));
+    }
+
+    protected processPaginatedListByStatus(response: HttpResponseBase): Observable<GetProjectDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(GetProjectDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<GetProjectDto[]>(null as any);
+    }
+
+    /**
      * @param id (optional) 
      * @return Success
      */
@@ -4103,6 +4307,64 @@ export class ProjectServiceProxy {
             }));
         }
         return _observableOf<GetProjectDto>(null as any);
+    }
+
+    /**
+     * @return Success
+     */
+    statusListStr(): Observable<EnumListDto[]> {
+        let url_ = this.baseUrl + "/api/services/app/Project/StatusListStr";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "text/plain"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStatusListStr(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStatusListStr(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<EnumListDto[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<EnumListDto[]>;
+        }));
+    }
+
+    protected processStatusListStr(response: HttpResponseBase): Observable<EnumListDto[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200.push(EnumListDto.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap(_responseText => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf<EnumListDto[]>(null as any);
     }
 
     /**
@@ -6522,6 +6784,53 @@ export interface IDeveloperDto {
     professionId: number;
 }
 
+export class EnumListDto implements IEnumListDto {
+    id: number;
+    text: string | undefined;
+
+    constructor(data?: IEnumListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): EnumListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new EnumListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        return data;
+    }
+
+    clone(): EnumListDto {
+        const json = this.toJSON();
+        let result = new EnumListDto();
+        result.init(json);
+        return result;
+    }
+}
+
+export interface IEnumListDto {
+    id: number;
+    text: string | undefined;
+}
+
 export class ExternalAuthenticateModel implements IExternalAuthenticateModel {
     authProvider: string;
     providerKey: string;
@@ -7015,6 +7324,8 @@ export class GetMissionDto implements IGetMissionDto {
     status: StatusMission;
     beginTime: moment.Moment;
     endTime: moment.Moment;
+    readonly beginTimeStr: string | undefined;
+    readonly endTimeStr: string | undefined;
     commits: GetCommitDto[] | undefined;
     developerId: number | undefined;
     projectId: number;
@@ -7035,6 +7346,8 @@ export class GetMissionDto implements IGetMissionDto {
             this.status = _data["status"];
             this.beginTime = _data["beginTime"] ? moment(_data["beginTime"].toString()) : <any>undefined;
             this.endTime = _data["endTime"] ? moment(_data["endTime"].toString()) : <any>undefined;
+            (<any>this).beginTimeStr = _data["beginTimeStr"];
+            (<any>this).endTimeStr = _data["endTimeStr"];
             if (Array.isArray(_data["commits"])) {
                 this.commits = [] as any;
                 for (let item of _data["commits"])
@@ -7059,6 +7372,8 @@ export class GetMissionDto implements IGetMissionDto {
         data["status"] = this.status;
         data["beginTime"] = this.beginTime ? this.beginTime.toISOString() : <any>undefined;
         data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        data["beginTimeStr"] = this.beginTimeStr;
+        data["endTimeStr"] = this.endTimeStr;
         if (Array.isArray(this.commits)) {
             data["commits"] = [];
             for (let item of this.commits)
@@ -7083,6 +7398,8 @@ export interface IGetMissionDto {
     status: StatusMission;
     beginTime: moment.Moment;
     endTime: moment.Moment;
+    beginTimeStr: string | undefined;
+    endTimeStr: string | undefined;
     commits: GetCommitDto[] | undefined;
     developerId: number | undefined;
     projectId: number;
@@ -7141,6 +7458,8 @@ export class GetProjectDto implements IGetProjectDto {
     status: StatusProject;
     beginTime: moment.Moment;
     endTime: moment.Moment;
+    readonly beginTimeStr: string | undefined;
+    readonly endTimeStr: string | undefined;
     customerId: number | undefined;
     managerId: number | undefined;
 
@@ -7160,6 +7479,8 @@ export class GetProjectDto implements IGetProjectDto {
             this.status = _data["status"];
             this.beginTime = _data["beginTime"] ? moment(_data["beginTime"].toString()) : <any>undefined;
             this.endTime = _data["endTime"] ? moment(_data["endTime"].toString()) : <any>undefined;
+            (<any>this).beginTimeStr = _data["beginTimeStr"];
+            (<any>this).endTimeStr = _data["endTimeStr"];
             this.customerId = _data["customerId"];
             this.managerId = _data["managerId"];
         }
@@ -7179,6 +7500,8 @@ export class GetProjectDto implements IGetProjectDto {
         data["status"] = this.status;
         data["beginTime"] = this.beginTime ? this.beginTime.toISOString() : <any>undefined;
         data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        data["beginTimeStr"] = this.beginTimeStr;
+        data["endTimeStr"] = this.endTimeStr;
         data["customerId"] = this.customerId;
         data["managerId"] = this.managerId;
         return data;
@@ -7198,6 +7521,8 @@ export interface IGetProjectDto {
     status: StatusProject;
     beginTime: moment.Moment;
     endTime: moment.Moment;
+    beginTimeStr: string | undefined;
+    endTimeStr: string | undefined;
     customerId: number | undefined;
     managerId: number | undefined;
 }

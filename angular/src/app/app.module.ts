@@ -35,6 +35,7 @@ import { SidebarLogoComponent } from './layout/sidebar-logo.component';
 import { SidebarUserPanelComponent } from './layout/sidebar-user-panel.component';
 import { SidebarMenuComponent } from './layout/sidebar-menu.component';
 import { CustomerComponent } from './customer/customer.component';
+import { ProjectComponent } from './project/project.component';
 
 @NgModule({
   declarations: [
@@ -61,6 +62,7 @@ import { CustomerComponent } from './customer/customer.component';
     SidebarLogoComponent,
     SidebarUserPanelComponent,
     SidebarMenuComponent,
+    ProjectComponent,
     CustomerComponent
   ],
   imports: [
